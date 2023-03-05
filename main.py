@@ -47,6 +47,7 @@ def error_hist_draw_2 (error_canvas, error_hist, bin_1, error_1, bin_2, error_2)
     error_hist_axis.SetBinLabel(2,'Electron Data') #Labeling the second bin
     error_hist.SetMarkerStyle(kFullDotMedium) #Setting the marker style
     error_hist.SetMarkerColor(kBlue+2) #Settting marker color
+    error_hist.SetStats(0)
     error_hist.Draw('e1')
     error_canvas.Draw()
 
@@ -70,6 +71,7 @@ def error_hist_draw_pt (error_canvas, error_hist, bin_1, error_1, bin_2, error_2
     error_hist_axis.SetBinLabel(5, "PT > 60")
     error_hist.SetMarkerStyle(kFullDotMedium)
     error_hist.SetMarkerColor(kBlue+2)
+    error_hist.SetStats(0)
     error_hist.Draw('e1')
     error_canvas.Draw()
 
@@ -93,6 +95,7 @@ def error_hist_draw_eta (error_canvas, error_hist, bin_1, error_1, bin_2, error_
     error_hist_axis.SetBinLabel(5, "eta > 2")
     error_hist.SetMarkerStyle(kFullDotMedium)
     error_hist.SetMarkerColor(kBlue+2)
+    error_hist.SetStats(0)
     error_hist.Draw('e1')
     error_canvas.Draw()
 
