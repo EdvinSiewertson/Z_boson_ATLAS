@@ -26,6 +26,11 @@ Fit.SetParameters(4000, 90.11, 3.386) #Setting base parameters
 Fit.Save(f_low, f_up, 0, 0, 0, 0) #Setting the interval for fitting
 
 # Functions for the histograms, the calculated mass, the different selection cuts, the event loops etc.
+def create_canvas_and_hist(name, title):
+    canvas = TCanvas(name, title, 800, 600)
+    hist = TH1F(title, "; mass [GeV]; events", bins, low, up)
+    return canvas, hist
+
 def hist_draw(hist, canvas, color):
     hist.Draw()
     hist.Fit('Fit', "R", "", f_low, f_up) #R or S
@@ -65,7 +70,6 @@ def event_loop(variable, type, min, max, canvas, histogram): # Event loop for th
 
 def event_loop_channel(type, canvas, histogram): # Event loop for the decay channels
     print(str(histogram))
-
     n=0
     for event in tree:
         n += 1
@@ -73,13 +77,7 @@ def event_loop_channel(type, canvas, histogram): # Event loop for the decay chan
             print(n)
         if (tree.lep_n == 2 and tree.lep_charge[0] != tree.lep_charge[1] and tree.lep_type[0] == tree.lep_type[1] == type):
             InvMass_Hist(histogram)
-
     hist_draw(histogram, canvas, 4)
-
-def create_canvas_and_hist(name, title):
-    canvas = TCanvas(name, title, 800, 600)
-    hist = TH1F(title, "; mass [GeV]; events", bins, low, up)
-    return canvas, hist
 
 # Muon decay channel
 canvas_muon, hist_muon = create_canvas_and_hist("Canvas_muon", "Muon Decay Channel")
@@ -163,13 +161,6 @@ def parameter(hist, n): # hist <=> interval. n: 1 = center, 2 = width
 
 def parameter_error(hist, n):
     return hist.GetFunction('Fit').GetParError(n)
-
-def create_center_and_width_hist(name, n_bins): ##test test test
-    canvas_center = TCanvas(f"{name} Center",'Title',800,600)
-    hist_center = TH1F('Center Parameter',f"Center Parameter {name}; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
-    canvas_width = TCanvas(f"{name} Width",'Title',800,600)
-    hist_width = TH1F('Width Parameter',f"Width Parameter {name}; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
-    return canvas_center, hist_center, canvas_width, hist_width
 
 def create_center_hist(name, n_bins):
     canvas_center = TCanvas(name + "Center",'Title',800,600)
