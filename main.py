@@ -1,31 +1,31 @@
 """lep_pt = transverse momentum of the lepton,
-lep_eta = pseudo-rapidity of the lepton,
+lep_eta = pseudorapidity of the lepton,
 lep_phi = azimuthal angle of the lepton,
 lep_E = energy of the lepton."""
 
 from ROOT import TFile, TLorentzVector, TF1, TH1F, TCanvas, kRed, kBlue, kFullDotMedium
 from math import inf
 
-f_low = 80 #Edges for fitting
+f_low = 80 # Edges for fitting
 f_up = 100
-bins = 200 #Histogram bins and edges
+bins = 200 # Histogram bins and edges
 low = 0
 up = 200
-leadLepton  = TLorentzVector() #Lead and trail lepton as Lorentz Vectors
+leadLepton  = TLorentzVector() # Lead and trail lepton as Lorentz Vectors
 trailLepton = TLorentzVector()
 
-#2lep 13 TeV sample
+# 2lep 13 TeV sample
 data_file = TFile.Open("https://atlas-opendata.web.cern.ch/atlas-opendata/samples/2020/2lep/Data/data_B.2lep.root")
-tree = data_file.Get("mini") #Getting the data from the .root file
+tree = data_file.Get("mini") # Getting the data from the .root file
 tree.GetEntries()
 print(f"Entries: {tree.GetEntries()}")
 
-#Breit-Wigner plus Gaussian function
+# Breit-Wigner plus Gaussian function
 Fit = TF1("Fit", "[0] * TMath::BreitWigner(x, [1], [2]) + gaus", f_low, f_up) #Predifined Breit-Wigner function
 Fit.SetParameters(4000, 90.11, 3.386) #Setting base parameters
 Fit.Save(f_low, f_up, 0, 0, 0, 0) #Setting the interval for fitting
 
-#Functions for the histograms, the calculated mass, the different selection cuts, the event loops etc.
+# Functions for the histograms, the calculated mass, the different selection cuts, the event loops etc.
 def hist_draw(hist, canvas, color):
     hist.Draw()
     hist.Fit('Fit', "R", "", f_low, f_up) #R or S
@@ -34,24 +34,24 @@ def hist_draw(hist, canvas, color):
     Fit.SetLineColor(kRed)
     canvas.Draw()
 
-def InvMass_Hist(hist): #Calculatng, returning and filling the histogram with the invariant mass
-    leadLepton.SetPtEtaPhiE(tree.lep_pt[0]/1000., tree.lep_eta[0], tree.lep_phi[0], tree.lep_E[0]/1000.) #Define one TLorentz vector for each lepton; two vectors (devide by 1000 to get value in GeV)
+def InvMass_Hist(hist): # Calculatng, returning and filling the histogram with the invariant mass
+    leadLepton.SetPtEtaPhiE(tree.lep_pt[0]/1000., tree.lep_eta[0], tree.lep_phi[0], tree.lep_E[0]/1000.) # Define one TLorentz vector for each lepton; two vectors (devide by 1000 to get value in GeV)
     trailLepton.SetPtEtaPhiE(tree.lep_pt[1]/1000., tree.lep_eta[1], tree.lep_phi[1], tree.lep_E[1]/1000.)
-    invmass = leadLepton + trailLepton  #Addition of two TLorentz vectors above
+    invmass = leadLepton + trailLepton # Addition of two TLorentz vectors above
     if 0 < invmass.M() < 200:
-        hist.Fill(invmass.M()) #Filling the histogram if the calculated mass is relevant
+        hist.Fill(invmass.M()) # Filling the histogram if the calculated mass is relevant
 
-def pt(type, T_low, T_up, hist_var): #Transverse momentum
-    if (tree.lep_n == 2 and tree.lep_charge[0] != tree.lep_charge[1] and tree.lep_type[0] == tree.lep_type[1] == type): #Base conditions
-        if (T_low*1000 < tree.lep_pt[0] < T_up*1000 and T_low*1000 < tree.lep_pt[1] < T_up*1000): #Transverse momentum in GeV
+def pt(type, T_low, T_up, hist_var): # Transverse momentum
+    if (tree.lep_n == 2 and tree.lep_charge[0] != tree.lep_charge[1] and tree.lep_type[0] == tree.lep_type[1] == type): # Base conditions
+        if (T_low*1000 < tree.lep_pt[0] < T_up*1000 and T_low*1000 < tree.lep_pt[1] < T_up*1000): # Transverse momentum in GeV
             InvMass_Hist(hist_var)
 
-def eta(type, Eta_low, Eta_up, hist_var): #Pseudorapidity
-    if (tree.lep_n == 2 and tree.lep_charge[0] != tree.lep_charge[1] and tree.lep_type[0] == tree.lep_type[1] == type): #Base conditions
-        if (Eta_low < tree.lep_eta[0] < Eta_up and Eta_low < tree.lep_eta[1] < Eta_up): #Pseudorapidity
+def eta(type, Eta_low, Eta_up, hist_var): # Pseudorapidity
+    if (tree.lep_n == 2 and tree.lep_charge[0] != tree.lep_charge[1] and tree.lep_type[0] == tree.lep_type[1] == type): # Base conditions
+        if (Eta_low < tree.lep_eta[0] < Eta_up and Eta_low < tree.lep_eta[1] < Eta_up): # Pseudorapidity
             InvMass_Hist(hist_var)
 
-def event_loop(variable, type, min, max, canvas, histogram): #Event loop for the momentum and pseudorapidity
+def event_loop(variable, type, min, max, canvas, histogram): # Event loop for the momentum and pseudorapidity
     print(str(histogram))
 
     n=0
@@ -63,7 +63,7 @@ def event_loop(variable, type, min, max, canvas, histogram): #Event loop for the
 
     hist_draw(histogram, canvas, 4)
 
-def event_loop_channel(type, canvas, histogram): #Event loop for the decay channels
+def event_loop_channel(type, canvas, histogram): # Event loop for the decay channels
     print(str(histogram))
 
     n=0
@@ -77,16 +77,16 @@ def event_loop_channel(type, canvas, histogram): #Event loop for the decay chann
     hist_draw(histogram, canvas, 4)
     
 def error_hist_draw_2 (error_canvas, error_hist, bin_1, error_1, bin_2, error_2):
-    error_hist.SetBinContent(1, bin_1) #Setting the muon center parameter
-    error_hist.SetBinError(1, error_1) #Setting the error of the parameter
-    error_hist.SetBinContent(2, bin_2) #Setting the electron center parameter
-    error_hist.SetBinError(2, error_2) #Setting the error
+    error_hist.SetBinContent(1, bin_1) # Setting the muon center parameter
+    error_hist.SetBinError(1, error_1) # Setting the error of the parameter
+    error_hist.SetBinContent(2, bin_2) # Setting the electron center parameter
+    error_hist.SetBinError(2, error_2) # Setting the error
     error_hist.SetLineWidth(2)
-    error_hist_axis = error_hist.GetXaxis() #Getting the x-axis of the histogram
-    error_hist_axis.SetBinLabel(1,'Muon Data') #Labeling the first bin
-    error_hist_axis.SetBinLabel(2,'Electron Data') #Labeling the second bin
-    error_hist.SetMarkerStyle(kFullDotMedium) #Setting the marker style
-    error_hist.SetMarkerColor(kBlue+2) #Settting marker color
+    error_hist_axis = error_hist.GetXaxis() # Getting the x-axis of the histogram
+    error_hist_axis.SetBinLabel(1,'Muon Data') # Labeling the first bin
+    error_hist_axis.SetBinLabel(2,'Electron Data') # Labeling the second bin
+    error_hist.SetMarkerStyle(kFullDotMedium) # Setting the marker style
+    error_hist.SetMarkerColor(kBlue+2) # Settting marker color
     error_hist.SetStats(0)
     error_hist.Draw('e1')
     error_canvas.Draw()
@@ -111,36 +111,23 @@ def error_hist_draw_5 (variable, error_canvas, error_hist, bin_1, error_1, bin_2
     error_hist.Draw('e1')
     error_canvas.Draw()
 
-def parameter(hist, n): #hist = interval, n = center/width
-    hist.GetFunction('Fit').GetParameter(n)
-
-def parameter_error(hist, n):
-    hist.GetFunction('Fit').GetParError(n)
-
-def hist_center_and_width_channels(hist_1, hist_2):
-    canvas_center = TCanvas("Channel Center",'Title',800,600)
-    hist_center = TH1F('Center Parameter',"Center Parameter Decay Channels; ; mass [GeV]", 2, 0, 2) #Create histogram for the center parameter
-    error_hist_draw_2(canvas_center, hist_center, parameter(hist_1, 1), parameter_error(hist_1, 1), parameter(hist_2, 1), parameter_error(hist_2, 1))
-
-    canvas_width = TCanvas("Channel Width",'Title',800,600)
-    hist_width = TH1F('Width Parameter',"Width Parameter Decay Channels; ; mass [GeV]", 2, 0, 2) #Create histogram for the width parameter
-    error_hist_draw_2(canvas_width, hist_width, parameter(hist_1, 2), parameter_error(hist_1, 2), parameter(hist_2, 2), parameter_error(hist_2, 2))
-
-def hist_center_and_width(variable, hist_1, hist_2, hist_3, hist_4, hist_5):
-    canvas_center = TCanvas(f"{hist_1} Center",'Title',800,600)
-    hist_center = TH1F('Center Parameter',f"Center Parameter {hist_1}; ; mass [GeV]", 5, 0, 2) #Create histogram for the center parameter
-    error_hist_draw_5(variable, canvas_center, hist_center, parameter(hist_1, 1), parameter_error(hist_1, 1), parameter(hist_2, 1), parameter_error(hist_2, 1), \
-                      parameter(hist_3, 1), parameter_error(hist_3, 1), parameter(hist_4, 1), parameter_error(hist_4, 1), parameter(hist_5, 1), parameter_error(hist_5, 1))
-
-    canvas_width = TCanvas(f"{hist_1} Width",'Title',800,600)
-    hist_width = TH1F('Width Parameter',f"Width Parameter {hist_1}; ; mass [GeV]", 5, 0, 2) #Create histogram for the width parameter
-    error_hist_draw_5(variable, canvas_width, hist_width, parameter(hist_1, 2), parameter_error(hist_1, 2), parameter(hist_2, 2), parameter_error(hist_2, 2), \
-                      parameter(hist_3, 2), parameter_error(hist_3, 2), parameter(hist_4, 2), parameter_error(hist_4, 2), parameter(hist_5, 2), parameter_error(hist_5, 2))
-
 def create_canvas_and_hist(name, title):
     canvas = TCanvas(name, title, 800, 600)
     hist = TH1F(title, "; mass [GeV]; events", bins, low, up)
     return canvas, hist
+
+def parameter(hist, n): # hist <=> interval. n: 1 = center, 2 = width
+    return hist.GetFunction('Fit').GetParameter(n)
+
+def parameter_error(hist, n):
+    return hist.GetFunction('Fit').GetParError(n)
+
+def create_center_and_width_hist(name, n_bins): ##test test test
+    canvas_center = TCanvas(f"{name} Center",'Title',800,600)
+    hist_center = TH1F('Center Parameter',f"Center Parameter {name}; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
+    canvas_width = TCanvas(f"{name} Width",'Title',800,600)
+    hist_width = TH1F('Width Parameter',f"Width Parameter {name}; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
+    return canvas_center, hist_center, canvas_width, hist_width
 
 # Muon decay channel
 canvas_muon, hist_muon = create_canvas_and_hist("Canvas_muon", "Muon Decay Channel")
@@ -183,12 +170,66 @@ for i, (eta_min, eta_max) in enumerate(eta_ranges):
     eta_canvases.append(canvas)
     eta_histograms.append(hist)
 
-# Center and width parameters for the muon and electron decay channels
-hist_center_and_width_channels(hist_muon, hist_electron)
+def create_center_hist(name, n_bins):
+    canvas_center = TCanvas(name + "Center",'Title',800,600)
+    hist_center = TH1F('Center Parameter',"Center Parameter" + name + "; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
+    return canvas_center, hist_center
 
-# Center and width parameters for the muon and electron momentum
-hist_center_and_width("pt", muon_histograms[0], muon_histograms[1], muon_histograms[2], muon_histograms[3], muon_histograms[4])
-hist_center_and_width("pt", electron_histograms[0], electron_histograms[1], electron_histograms[2], electron_histograms[3], electron_histograms[4])
+def create_width_hist(name, n_bins):
+    canvas_center = TCanvas(name + "Center",'Title',800,600)
+    hist_center = TH1F('Center Parameter',"Center Parameter" + name + "; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
+    return canvas_center, hist_center
 
-# Center and width parameters for the pseudorapidity
-hist_center_and_width("eta", eta_histograms[0], eta_histograms[1], eta_histograms[2], eta_histograms[3], eta_histograms[4])
+def draw_center(sort, canvas_center, hist_center, *histograms):
+    centers = []
+    center_errors = []
+    for hist in histograms:
+        center = parameter(hist, 1)
+        center_error = parameter_error(hist, 1)
+        centers.append(center)
+        center_errors.append(center_error)
+
+    if len(centers) > 2:
+         error_hist_draw_5(sort, canvas_center, hist_center, *centers, *center_errors)
+    else:
+        # Draw the histograms with their center points and error bars
+        error_hist_draw_2(canvas_center, hist_center, *centers, *center_errors)
+
+def draw_width(sort, canvas_width, hist_width, *histograms):
+    widths = []
+    width_errors = []
+    for hist in histograms:
+        width = parameter(hist, 2)
+        width_error = parameter_error(hist, 2)
+        widths.append(width)
+        width_errors.append(width_error)
+
+    if len(widths) > 2:
+         error_hist_draw_5(sort, canvas_width, hist_width, *widths, *width_errors)
+    else:
+        # Draw the histograms with their width points and error bars
+        error_hist_draw_2(canvas_width, hist_width, *widths, *width_errors)
+
+# Muon and electron center and width parameters histograms
+canvas_center, hist_center = create_center_hist("Decay Channels", 2)
+draw_center("channel", canvas_center, hist_center, hist_muon, hist_electron)
+canvas_width, hist_width = create_width_hist("Decay Channels", 2)
+draw_width("channel", canvas_width, hist_width, hist_muon, hist_electron)
+
+# Muon momentum center and width parameters histograms
+canvas_center_muon_pt, hist_center_muon_pt = create_center_hist("Transverse Momentum", 2)
+draw_center("pt", canvas_center_muon_pt, hist_center_muon_pt, muon_histograms[0], muon_histograms[1], muon_histograms[2], muon_histograms[3], muon_histograms[4])
+canvas_width_muon_pt, hist_width_muon_pt = create_width_hist("Decay Channels", 2)
+draw_width("pt", canvas_width_muon_pt, hist_width_muon_pt, muon_histograms[0], muon_histograms[1], muon_histograms[2], muon_histograms[3], muon_histograms[4])
+
+# Electron momentum center and width parameters histograms
+canvas_center_electron_pt, hist_center_electron_pt = create_center_hist("Transverse Momentum", 2)
+draw_center("pt", canvas_center_electron_pt, hist_center_electron_pt, electron_histograms[0], electron_histograms[1], electron_histograms[2], electron_histograms[3], electron_histograms[4])
+canvas_width_electron_pt, hist_width_electron_pt = create_width_hist("Decay Channels", 2)
+draw_width("pt", canvas_width_electron_pt, hist_width_electron_pt, electron_histograms[0], electron_histograms[1], electron_histograms[2], electron_histograms[3], electron_histograms[4])
+
+# Muon pseudorapidity center and width parameters histograms
+canvas_center_eta, hist_center_eta = create_center_hist("Transverse Momentum", 2)
+draw_center("pt", canvas_center_eta, hist_center_eta, eta_histograms[0], eta_histograms[1], eta_histograms[2], eta_histograms[3], eta_histograms[4])
+canvas_width_eta, hist_width_eta = create_width_hist("Decay Channels", 2)
+draw_width("pt", canvas_width_eta, hist_width_eta, eta_histograms[0], eta_histograms[1], eta_histograms[2], eta_histograms[3], eta_histograms[4])
