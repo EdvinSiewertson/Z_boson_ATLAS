@@ -164,7 +164,7 @@ def parameter_error(hist, n):
 
 def create_center_hist(name, n_bins):
     canvas_center = TCanvas(name + " Center",'Title',800,600)
-    hist_center = TH1F('Center Parameter',"Center Parameter" + name + "; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
+    hist_center = TH1F('Center Parameter',"Center Parameter " + name + "; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
     return canvas_center, hist_center
 
 def create_width_hist(name, n_bins):
