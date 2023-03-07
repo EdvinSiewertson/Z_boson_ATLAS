@@ -215,9 +215,9 @@ canvas_width_muon_pt, hist_width_muon_pt = create_width_hist("Muon Transverse Mo
 draw_width("pt", canvas_width_muon_pt, hist_width_muon_pt, muon_histograms[0], muon_histograms[1], muon_histograms[2], muon_histograms[3], muon_histograms[4])
 
 # Electron momentum center and width parameters histograms
-canvas_center_electron_pt, hist_center_electron_pt = create_center_hist("Muon Transverse Momentum", 2)
+canvas_center_electron_pt, hist_center_electron_pt = create_center_hist("Electron Transverse Momentum", 2)
 draw_center("pt", canvas_center_electron_pt, hist_center_electron_pt, electron_histograms[0], electron_histograms[1], electron_histograms[2], electron_histograms[3], electron_histograms[4])
-canvas_width_electron_pt, hist_width_electron_pt = create_width_hist("Muon Transverse Momentun", 5)
+canvas_width_electron_pt, hist_width_electron_pt = create_width_hist("Electron Transverse Momentun", 5)
 draw_width("pt", canvas_width_electron_pt, hist_width_electron_pt, electron_histograms[0], electron_histograms[1], electron_histograms[2], electron_histograms[3], electron_histograms[4])
 
 # Muon pseudorapidity center and width parameters histograms
