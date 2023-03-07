@@ -140,11 +140,11 @@ def error_hist_draw_5 (variable, error_canvas, error_hist, bin_1, error_1, bin_2
     for i in range(1,6):
         error_hist.SetBinContent(i, locals()['bin_'+str(i)])
         error_hist.SetBinError(i, locals()['error_'+str(i)]) 
-    if variable == "pt":
+    if (variable == "pt"):
         bin_labels = ["PT < 30", "30 < PT < 40", "40 < PT < 50", "50 < PT < 60", "PT > 60"]
         error_hist_axis = error_hist.GetXaxis()
         [error_hist_axis.SetBinLabel(i+1, label) for i, label in enumerate(bin_labels)]
-    elif variable == "eta":
+    elif (variable == "eta"):
         bin_labels = ["eta < 0.5", "0.5 < eta < 1", "1 < eta < 1.5", "1.5 < eta < 2", "eta > 2"]
         error_hist_axis = error_hist.GetXaxis()
         [error_hist_axis.SetBinLabel(i+1, label) for i, label in enumerate(bin_labels)]
@@ -181,7 +181,7 @@ def draw_center(sort, canvas_center, hist_center, *histograms):
         centers.append(center)
         center_errors.append(center_error)
 
-    if len(centers) > 2:
+    if (sort == "pt" or sort == "eta"):
          error_hist_draw_5(sort, canvas_center, hist_center, *centers, *center_errors)
     else:
         # Draw the histograms with their center points and error bars
@@ -196,7 +196,7 @@ def draw_width(sort, canvas_width, hist_width, *histograms):
         widths.append(width)
         width_errors.append(width_error)
 
-    if len(widths) > 2:
+    if (sort == "pt" or sort == "eta"):
          error_hist_draw_5(sort, canvas_width, hist_width, *widths, *width_errors)
     else:
         # Draw the histograms with their width points and error bars
