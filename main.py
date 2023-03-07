@@ -75,59 +75,11 @@ def event_loop_channel(type, canvas, histogram): # Event loop for the decay chan
             InvMass_Hist(histogram)
 
     hist_draw(histogram, canvas, 4)
-    
-def error_hist_draw_2 (error_canvas, error_hist, bin_1, error_1, bin_2, error_2):
-    error_hist.SetBinContent(1, bin_1) # Setting the muon center parameter
-    error_hist.SetBinError(1, error_1) # Setting the error of the parameter
-    error_hist.SetBinContent(2, bin_2) # Setting the electron center parameter
-    error_hist.SetBinError(2, error_2) # Setting the error
-    error_hist.SetLineWidth(2)
-    error_hist_axis = error_hist.GetXaxis() # Getting the x-axis of the histogram
-    error_hist_axis.SetBinLabel(1,'Muon Data') # Labeling the first bin
-    error_hist_axis.SetBinLabel(2,'Electron Data') # Labeling the second bin
-    error_hist.SetMarkerStyle(kFullDotMedium) # Setting the marker style
-    error_hist.SetMarkerColor(kBlue+2) # Settting marker color
-    error_hist.SetStats(0)
-    error_hist.Draw('e1')
-    error_canvas.Draw()
-
-def error_hist_draw_5 (variable, error_canvas, error_hist, bin_1, error_1, bin_2, error_2, bin_3, error_3, bin_4, error_4, bin_5, error_5):
-    for i in range(1,6):
-        error_hist.SetBinContent(i, locals()['bin_'+str(i)])
-        error_hist.SetBinError(i, locals()['error_'+str(i)]) 
-    if variable == "pt":
-        bin_labels = ["PT < 30", "30 < PT < 40", "40 < PT < 50", "50 < PT < 60", "PT > 60"]
-        error_hist_axis = error_hist.GetXaxis()
-        [error_hist_axis.SetBinLabel(i+1, label) for i, label in enumerate(bin_labels)]
-    elif variable == "eta":
-        bin_labels = ["eta < 0.5", "0.5 < eta < 1", "1 < eta < 1.5", "1.5 < eta < 2", "eta > 2"]
-        error_hist_axis = error_hist.GetXaxis()
-        [error_hist_axis.SetBinLabel(i+1, label) for i, label in enumerate(bin_labels)]
-
-    error_hist.SetLineWidth(2)
-    error_hist.SetMarkerStyle(kFullDotMedium)
-    error_hist.SetMarkerColor(kBlue+2)
-    error_hist.SetStats(0)
-    error_hist.Draw('e1')
-    error_canvas.Draw()
 
 def create_canvas_and_hist(name, title):
     canvas = TCanvas(name, title, 800, 600)
     hist = TH1F(title, "; mass [GeV]; events", bins, low, up)
     return canvas, hist
-
-def parameter(hist, n): # hist <=> interval. n: 1 = center, 2 = width
-    return hist.GetFunction('Fit').GetParameter(n)
-
-def parameter_error(hist, n):
-    return hist.GetFunction('Fit').GetParError(n)
-
-def create_center_and_width_hist(name, n_bins): ##test test test
-    canvas_center = TCanvas(f"{name} Center",'Title',800,600)
-    hist_center = TH1F('Center Parameter',f"Center Parameter {name}; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
-    canvas_width = TCanvas(f"{name} Width",'Title',800,600)
-    hist_width = TH1F('Width Parameter',f"Width Parameter {name}; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
-    return canvas_center, hist_center, canvas_width, hist_width
 
 # Muon decay channel
 canvas_muon, hist_muon = create_canvas_and_hist("Canvas_muon", "Muon Decay Channel")
@@ -169,6 +121,55 @@ for i, (eta_min, eta_max) in enumerate(eta_ranges):
     event_loop(eta, 13, eta_min, eta_max, canvas, hist)
     eta_canvases.append(canvas)
     eta_histograms.append(hist)
+
+#Functions for the center and width histograms
+def error_hist_draw_2 (error_canvas, error_hist, bin_1, error_1, bin_2, error_2):
+    error_hist.SetBinContent(1, bin_1) # Setting the muon center parameter
+    error_hist.SetBinError(1, error_1) # Setting the error of the parameter
+    error_hist.SetBinContent(2, bin_2) # Setting the electron center parameter
+    error_hist.SetBinError(2, error_2) # Setting the error
+    error_hist.SetLineWidth(2)
+    error_hist_axis = error_hist.GetXaxis() # Getting the x-axis of the histogram
+    error_hist_axis.SetBinLabel(1,'Muon Data') # Labeling the first bin
+    error_hist_axis.SetBinLabel(2,'Electron Data') # Labeling the second bin
+    error_hist.SetMarkerStyle(kFullDotMedium) # Setting the marker style
+    error_hist.SetMarkerColor(kBlue+2) # Settting marker color
+    error_hist.SetStats(0)
+    error_hist.Draw('e1')
+    error_canvas.Draw()
+
+def error_hist_draw_5 (variable, error_canvas, error_hist, bin_1, error_1, bin_2, error_2, bin_3, error_3, bin_4, error_4, bin_5, error_5):
+    for i in range(1,6):
+        error_hist.SetBinContent(i, locals()['bin_'+str(i)])
+        error_hist.SetBinError(i, locals()['error_'+str(i)]) 
+    if variable == "pt":
+        bin_labels = ["PT < 30", "30 < PT < 40", "40 < PT < 50", "50 < PT < 60", "PT > 60"]
+        error_hist_axis = error_hist.GetXaxis()
+        [error_hist_axis.SetBinLabel(i+1, label) for i, label in enumerate(bin_labels)]
+    elif variable == "eta":
+        bin_labels = ["eta < 0.5", "0.5 < eta < 1", "1 < eta < 1.5", "1.5 < eta < 2", "eta > 2"]
+        error_hist_axis = error_hist.GetXaxis()
+        [error_hist_axis.SetBinLabel(i+1, label) for i, label in enumerate(bin_labels)]
+
+    error_hist.SetLineWidth(2)
+    error_hist.SetMarkerStyle(kFullDotMedium)
+    error_hist.SetMarkerColor(kBlue+2)
+    error_hist.SetStats(0)
+    error_hist.Draw('e1')
+    error_canvas.Draw()
+
+def parameter(hist, n): # hist <=> interval. n: 1 = center, 2 = width
+    return hist.GetFunction('Fit').GetParameter(n)
+
+def parameter_error(hist, n):
+    return hist.GetFunction('Fit').GetParError(n)
+
+def create_center_and_width_hist(name, n_bins): ##test test test
+    canvas_center = TCanvas(f"{name} Center",'Title',800,600)
+    hist_center = TH1F('Center Parameter',f"Center Parameter {name}; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
+    canvas_width = TCanvas(f"{name} Width",'Title',800,600)
+    hist_width = TH1F('Width Parameter',f"Width Parameter {name}; ; mass [GeV]", n_bins, 0, 2) # Create histogram for the center parameter
+    return canvas_center, hist_center, canvas_width, hist_width
 
 def create_center_hist(name, n_bins):
     canvas_center = TCanvas(name + "Center",'Title',800,600)
