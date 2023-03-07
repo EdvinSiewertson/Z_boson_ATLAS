@@ -121,7 +121,7 @@ for i, (eta_min, eta_max) in enumerate(eta_ranges):
     eta_histograms.append(hist)
 
 #Functions for the center and width histograms
-def error_hist_draw_2 (error_canvas, error_hist, bin_1, error_1, bin_2, error_2):
+def error_hist_draw_2 (error_canvas, error_hist, bin_1, bin_2, error_1, error_2):
     error_hist.SetBinContent(1, bin_1) # Setting the muon center parameter
     error_hist.SetBinError(1, error_1) # Setting the error of the parameter
     error_hist.SetBinContent(2, bin_2) # Setting the electron center parameter
@@ -136,7 +136,7 @@ def error_hist_draw_2 (error_canvas, error_hist, bin_1, error_1, bin_2, error_2)
     error_hist.Draw('e1')
     error_canvas.Draw()
 
-def error_hist_draw_5 (variable, error_canvas, error_hist, bin_1, error_1, bin_2, error_2, bin_3, error_3, bin_4, error_4, bin_5, error_5):
+def error_hist_draw_5 (variable, error_canvas, error_hist, bin_1, bin_2, bin_3, bin_4, bin_5, error_1, error_2, error_3, error_4, error_5):
     for i in range(1,6):
         error_hist.SetBinContent(i, locals()['bin_'+str(i)])
         error_hist.SetBinError(i, locals()['error_'+str(i)]) 
