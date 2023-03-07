@@ -222,6 +222,6 @@ draw_width("pt", canvas_width_electron_pt, hist_width_electron_pt, electron_hist
 
 # Muon pseudorapidity center and width parameters histograms
 canvas_center_eta, hist_center_eta = create_center_hist("Transverse Momentum", 2)
-draw_center("pt", canvas_center_eta, hist_center_eta, eta_histograms[0], eta_histograms[1], eta_histograms[2], eta_histograms[3], eta_histograms[4])
+draw_center("eta", canvas_center_eta, hist_center_eta, eta_histograms[0], eta_histograms[1], eta_histograms[2], eta_histograms[3], eta_histograms[4])
 canvas_width_eta, hist_width_eta = create_width_hist("Decay Channels", 2)
-draw_width("pt", canvas_width_eta, hist_width_eta, eta_histograms[0], eta_histograms[1], eta_histograms[2], eta_histograms[3], eta_histograms[4])
+draw_width("eta", canvas_width_eta, hist_width_eta, eta_histograms[0], eta_histograms[1], eta_histograms[2], eta_histograms[3], eta_histograms[4])
