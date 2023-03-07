@@ -209,9 +209,9 @@ canvas_width, hist_width = create_width_hist("Decay Channels", 2)
 draw_width("channel", canvas_width, hist_width, hist_muon, hist_electron)
 
 # Muon momentum center and width parameters histograms
-canvas_center_muon_pt, hist_center_muon_pt = create_center_hist("Transverse Momentum", 2)
+canvas_center_muon_pt, hist_center_muon_pt = create_center_hist("Transverse Momentum", 5)
 draw_center("pt", canvas_center_muon_pt, hist_center_muon_pt, muon_histograms[0], muon_histograms[1], muon_histograms[2], muon_histograms[3], muon_histograms[4])
-canvas_width_muon_pt, hist_width_muon_pt = create_width_hist("Decay Channels", 2)
+canvas_width_muon_pt, hist_width_muon_pt = create_width_hist("Transverse Momentum", 5)
 draw_width("pt", canvas_width_muon_pt, hist_width_muon_pt, muon_histograms[0], muon_histograms[1], muon_histograms[2], muon_histograms[3], muon_histograms[4])
 
 # Electron momentum center and width parameters histograms
